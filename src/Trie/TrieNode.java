@@ -1,5 +1,21 @@
 package Trie;
 
-public class TrieNode {
+public class TrieNode {	
+	public TrieNode(){
+		next = new TrieNode[TrieConstant.alphabet];
+		for(int i = 0; i < TrieConstant.alphabet; i++){
+			next[i] = null;
+		}
+		leaf = false;
+	}
 	
+	public void deleteChildren(){
+		for(int i = 0; i < TrieConstant.alphabet; i++){
+			next[i].deleteChildren();
+			next[i] = null;
+		}
+	}
+	
+	TrieNode[] next;
+	boolean leaf;
 }
