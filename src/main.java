@@ -3,12 +3,15 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.lang.Character;
 
+import BinarySearchTree.BinarySearchTreeNode;
 import Trie.*;
+import BinarySearchTree.*;
 
 public class main {
 
 	public static void main(String[] args) throws IOException {
 		trie = new Trie();
+		BST = new BinarySearchTree<Character>();
 		Charset encoding = Charset.defaultCharset();
         for (String filename : args) {
             File file = new File(filename);
@@ -16,6 +19,7 @@ public class main {
         }		
 	}
 	private static Trie trie;
+	private static BinarySearchTree<Character> BST;
 	
 	private static void handleFile(File file, Charset encoding) throws IOException {
         try (InputStream in = new FileInputStream(file);
@@ -28,18 +32,36 @@ public class main {
     }
 
     private static void handleCharacters(Reader reader) throws IOException {
-        int r;
+        int currentByte;
         String word = "";
-        int different;
-        //HashMap<char, boolean> hm = new HashMap<char, boolean>();
-        while ((r = reader.read()) != -1) {
-            char ch = (char) r;
+        int differentChars = 0;
+        int maxDifferentChars = 0;
+        
+        while ((currentByte = reader.read()) != -1) {
+            char ch = (char) currentByte;
             if(Character.isLetter(ch)){
             	word += ch;
-            }else{
-            	trie.add(word);
-            }
-            //System.out.println("Do something with " + ch);
+            	BST.insert(ch);
+            }else{      	
+            	differentChars = BST.getSize();
+            	if(maxDifferentChars == differentChars){
+            		trie.add(word);
+            	}else if(maxDifferentChars < differentChars){
+            		trie.clean();
+            		maxDifferentChars = differentChars;
+            		trie.add(word);
+            	}
+            	BST.clean();
+            	word = "";
+            }            
+        }
+        
+        System.out.println("Max difference " + new Integer(maxDifferentChars).toString());
+        System.out.println("Words with this difference: ");
+        
+        List<String> list = trie.getWords();
+        for(String s : list){
+        	System.out.println(s);
         }
     }
 }

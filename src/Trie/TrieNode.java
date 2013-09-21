@@ -11,7 +11,8 @@ public class TrieNode {
 	
 	public void deleteChildren(){
 		for(int i = 0; i < TrieConstant.alphabet; i++){
-			next[i].deleteChildren();
+			if(next[i] != null)
+				next[i].deleteChildren();
 			next[i] = null;
 		}
 	}

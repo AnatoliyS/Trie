@@ -1,5 +1,7 @@
 package Trie;
 
+import java.util.*;
+
 public class Trie {
 	public Trie(){
 		root = new TrieNode();
@@ -32,6 +34,26 @@ public class Trie {
 		return current.leaf;
 	}
 	
-	TrieNode root;
-	int size;	
+	public List<String> getWords(){
+		list = new ArrayList<String>();		
+		getWordsHelper(root, "");
+		return list;
+	}
+	
+	private void getWordsHelper(TrieNode current, String s){
+		if(current.leaf){
+			list.add(s);
+		}else{
+			for(int i = 0; i < TrieConstant.alphabet; i++){
+				if(current.next[i]  != null){
+					char ch = (char) (i + TrieConstant.lowLetter);
+					getWordsHelper(current.next[i], s + ch);
+				}
+			}
+		}
+	}
+	
+	private TrieNode root;
+	private List<String> list;
+	private int size;	
 }
